@@ -1,0 +1,16 @@
+2000-10-26  Paul Rhodes  <withnail@users.sourceforge.net>
+
+	* radstock.c: Actually uses the value passed on the command line
+
+	* Makefile.in: Passes the dictionary as a define on the command line
+
+	* radstock.1: Added notes to clarify the logic with !=. != will
+	not match packets without that attribute at all.
+
+	* process.c: parse_packet should never return FIL_UNDEF for any
+	terms. It should return TRUE on UNDEF and the operator is nexists
+	and FALSE otherwise.
+
+	* grammar.y: By sending NULL as the last parameter for exists
+	operators, we caused an exception when debugging was switched on.
+

@@ -1,0 +1,161 @@
+.\" $Id: radstock.1,v 1.3 2000/10/26 14:43:42 withnail Exp $
+
+.TH radstock 1 "SEPTEMBER 2000"
+
+.SH NAME
+
+radstock \- radius packet analyser
+
+.SH SYNOPSIS
+
+.B radstock <-hVTDKLMNqp> <-i
+.I interface
+.B > <-c 
+.I radius filter file
+.B > <-f 
+.I dictionary
+.B > <-e 
+.I radius filter
+.B > <
+.I pcap filter
+.B >
+
+.SH DESCRIPTION
+
+radstock provides a convenient tool to analyse radius traffic,
+including the ability to display radius attributes and also to
+actively filter on them. radstock is written using the pcap libraries
+and understands bpf filter logic in the same fashion as more common
+packet sniffing tools, such as
+.BR tcpdump (8)
+and 
+.BR snoop (1). 
+For details on writing pcap filters, please see these
+manual pages.
+
+
+.SH OPTIONS
+.IP -h
+Display help/usage information.
+
+.IP -V
+Display version information.
+
+.IP -i 
+Specify the interface to monitor.
+
+.IP -q 
+Be quiet; don't parse the radius packets. This option will only show
+the type of radius packet and the source and destinations (i.e. the
+top lines).
+
+.IP -e "\fI radius filter\fP"
+Provides a radius filter on the command line. The exact format of
+these filters will be detailed below.
+
+.IP -f "\fI dictionary\fP"
+Specify \fIdictionary\fP to be used rather than the default dictionary
+(/usr/local/etc/raddb/dictionary).
+
+.IP -c "\fI radius filter file\fP"
+Read the radius filter from \fIradius filter file\fP rather than the
+command line. If the file is a relative path, it is searched for using
+the \fIRADIUS_PATH\fP environment variable. If the filename is - then
+read the filter from stdin.
+
+.IP -p 
+Do not put the interface in promiscuous mode.
+
+.IP -T
+Print the time that each packet was received
+
+.IP -D
+Print the date and time that each packet was received
+
+.IP -K
+Only display authentication packets
+
+.IP -L
+Only display accounting packets
+
+.IP -M
+Only show request packets (auth or acct)
+
+.IP -N
+Only show response packets (auth or acct)
+
+.IP "\fI pcap filter\fP"
+The default filter is 'udp port 1645'. To override this filter specify
+a new one here. For example if you only wanted to see traffic between
+your radius server and server 1.2.3.4, then you could specify the
+filter as 'port 1645 and host 1.2.3.4'. Radstock will only monitor udp
+traffic, so it is not necessary to specify this in your filter.
+
+.SH RADIUS FILTER
+
+Radius filters are used to specify which radius packets are to be
+displayed. The filter defines a set of attributes to match, using a
+similar parser to the pcap filter. The simplist filter takes the form
+
+.IP
+<attribute> <operator> <value>
+.LP
+Where attribute is an attribute read from the radius dictionary. The
+value is handled differently for each specific attribute type. If the
+attribute type is either an ip address or a string, the value will be
+treated as a bounded POSIX regular expression. However, this regexp
+will have a '^' and '$' added at the beginning and end if they are not
+already present. If the attribute type is an integer, the value is
+expected to be either a number, or a value defined in the radius
+dictionary for that attribute. Both the attribute and value matches
+are case insensitive. When specifying string values, you may use
+single quotes as delimiters, to allow non alphanumeric characters in
+the value.
+
+The following operators are valid: '=', '!=', '>', '>=', '<',
+'<='. However, please note that only '=' and '!=' are valid for string
+and ip address matches.
+
+In addition, there are two further operators. 'exists <attribute>' is
+used to match any packet with that attribute present. 'nexists
+<attribute> is used to match a packet that does not contain the given
+attribute.
+
+Comparisions can be joined together with 'and' (&&), 'or' (||), 'not'
+(!), and the use of brackets.
+
+Please be aware of a slight catch with the '!=' operator. If you
+specify the following filter:
+.IP
+acct-status-type != start
+.LP
+This filter actually means 'show me all packets where acct-status-type
+is present and is not equal to start'. 
+
+.SH RADIUS FILTER EXAMPLES
+
+To show only auth requests from the @dummy.org domain from Nas-IP-Address
+1.2.3.4 use the following filter:
+.IP
+user-name = '.*@dummy.org' and nas-ip-address = 1.2.3.4
+.LP
+To show packets with which does not contain the attribute Ascend-Idle-Limit,
+use the following filter:
+.IP
+nexists ascend-idle-limit
+.LP
+A slightly more complex example, which includes the command line:
+.IP
+radstock -e "(user-name = bob or user-name = fred) and nas-port-id >
+30" udp port 1812
+
+.SH SEE ALSO
+.BR pcap (3), 
+.BR tcpdump (8),
+.BR regex(7)
+
+.SH AUTHOR
+
+Paul Rhodes <withnail@users.sourceforge.net>
+
+

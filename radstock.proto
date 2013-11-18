@@ -1,0 +1,10 @@
+# This file is used to generate a Solaris package
+i pkginfo=./pkginfo
+d none bin 0755 bin bin
+f none bin/radstock 0755 root other
+d none man 0755 bin bin
+d none man/man1 0755 bin bin
+f none man/man1/radstock.1 0644 root other
+d none etc 0755 root other
+d none etc/raddb 0755 root other
+f none etc/raddb/dictionary 0644 root other
