@@ -1,6 +1,14 @@
 2013-11-18  Eddie Stassen <estassen@gmail.com>
 
-	* Fix buffer overflow problems with large accounting packets
+	* Added support for Dis-Req, Dis-ACK and Dis-NAK packet types
+	
+	* Fixed all the buffer overflow issues with output buffer and large 
+	  accounting packets
+	 
+	* Updated to support flex
+	
+	* Added -S command line option to allow displaying invalid packets. 
+	  By default invalid packets will be suppressed
 
 	* Better display for VSA's.  VSA's are not fully supported (this would
 	require major changes), but at least they are displayed in a more or
