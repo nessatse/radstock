@@ -1,3 +1,13 @@
+2013-11-18  Eddie Stassen <estassen@gmail.com>
+
+	* Fix buffer overflow problems with large accounting packets
+
+	* Better display for VSA's.  VSA's are not fully supported (this would
+	require major changes), but at least they are displayed in a more or
+	less readable format.
+
+	* Timestamps for the -T option are formatted better
+
 2000-10-26  Paul Rhodes  <withnail@users.sourceforge.net>
 
 	* radstock.c: Actually uses the value passed on the command line
