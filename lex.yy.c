@@ -412,12 +412,12 @@ char *yytext;
 #line 1 "scanner.l"
 #define INITIAL 0
 #line 4 "scanner.l"
-#define YYSTYPE int
+//#define YYDEBUG 1
 #include "y.tab.h"
 extern char yacc_input_buff[1000];
 extern char *yacc_input_pos;
 extern int debug;
-extern int yylval;
+//extern YYSTYPE yylval;
 
 #ifndef lint
 static const char rcsid[] =
@@ -720,12 +720,12 @@ YY_RULE_SETUP
 case 7:
 YY_RULE_SETUP
 #line 59 "scanner.l"
-{ printf("\nlex: LPAR\n"); return LEX_LPAR; }
+{ if (debug) fprintf(stderr,"\nlex: LPAR\n"); return LEX_LPAR; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
 #line 60 "scanner.l"
-{ printf("\nlex: RPAR\n"); return LEX_RPAR; }
+{ if (debug) fprintf(stderr,"\nlex: RPAR\n"); return LEX_RPAR; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
@@ -760,22 +760,22 @@ YY_RULE_SETUP
 case 15:
 YY_RULE_SETUP
 #line 69 "scanner.l"
-{ printf("\nlex: NUM %s\n", yytext);  return LEX_NUM;  }
+{ printf("\nlex: NUM %s\n", yytext); yylval.string= yytext;  return LEX_NUM;  }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
 #line 70 "scanner.l"
-{  yylval = yytext;  return LEX_NUM;  }
+{  yylval.string = yytext;  return LEX_NUM;  }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
 #line 71 "scanner.l"
-{ printf("\nlex: STR %s\n", yytext);  yylval = yytext; return LEX_STR;  }
+{ printf("\nlex: STR %s\n", yytext);  yylval.string= yytext; return LEX_STR;  }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
 #line 72 "scanner.l"
-{ yylval = yytext; return LEX_STR;  }
+{ yylval.string = yytext; return LEX_STR;  }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP

@@ -64,6 +64,7 @@ extern int yydebug;
 #endif
 char yacc_input_buff[1000];
 char *yacc_input_pos;
+int yyparse(void);
 
 
 
@@ -196,7 +197,7 @@ int readdict(char *dictfile)
       else if (strcasecmp(arg4, "ipaddr") == 0) temp2 = RADAT_IP;
       else if (strcasecmp(arg4, "string") == 0) temp2 = RADAT_STR;
       if (debug & 2) 
-	fprintf(stderr, "readdict: new attrib (%d) = :%s:\n",
+	fprintf(stderr, "readdict: new attrib (%lu) = :%s:\n",
 		radattrs[t_radattrs].vala,
 		radattrs[t_radattrs].name);
       radattrs[t_radattrs++].valb = temp2;
@@ -401,7 +402,7 @@ int yacc_parse_test(int a1, int a2, int a3, char *value)
   {
     filters[t_radfilters].vala = a1;
     filters[t_radfilters].op   = a2;
-    filters[t_radfilters].valb = NULL;
+    filters[t_radfilters].valb = (unsigned long)NULL;
     retval = t_radfilters++;
   }
   else 
@@ -452,9 +453,9 @@ int yacc_parse_test(int a1, int a2, int a3, char *value)
 
       filters[t_radfilters].vala = a1;
       filters[t_radfilters].op   = a2;
-      filters[t_radfilters].valb = (int) malloc(sizeof(regex_t));
-      if (filters[t_radfilters].valb == (int) NULL) clean_exit(-2);
-      regcomp((regex_t *) filters[t_radfilters].valb,
+      filters[t_radfilters].valbp = malloc(sizeof(regex_t));
+      if (filters[t_radfilters].valbp ==  NULL) clean_exit(-2);
+      regcomp((regex_t *) filters[t_radfilters].valbp,
 	      tmpstr, REG_EXTENDED|REG_NOSUB|REG_ICASE);
       //strcpy(filters[t_radfilters].name, tmpstr);
       retval = t_radfilters++;

@@ -20,6 +20,7 @@
 /* Random variables used by data structures */
 #define LBUFSIZE 16384
 #define BUFSIZE  120
+#define HDRBUFSIZE 256
 #define ATTRSIZE 1024
 #define WATCHMAX 67
 /* Watchlist timeout in seconds */
@@ -37,6 +38,9 @@
 #define RADPKT_ACCT_CHALLENGE 11
 #define RADPKT_STATUS_SERVER  12
 #define RADPKT_STATUS_CLIENT  13
+#define RADPKT_DISC_REQ       40
+#define RADPKT_DISC_ACK       41
+#define RADPKT_DISC_NAK       42
 
 struct tree_elem
 {
@@ -55,7 +59,11 @@ struct attribs
 {
   char name[BUFSIZE];
   unsigned long int op, value;
-  unsigned long int vala, valb;
+  unsigned long int vala;
+  union {
+     unsigned long int  valb;
+     regex_t *valbp;
+  };
 }; 
 
 struct t_watchlist
@@ -73,12 +81,12 @@ struct attribs radvals[ATTRSIZE];
 extern int t_radfilters;
 extern struct in_addr net, mask;
 
-extern int show_auth, show_acct, show_req, show_resp;
+extern int show_auth, show_acct, show_req, show_resp, show_invalid;
 
 extern int link_offset;
 extern int quiet;
 extern int debug;
-extern void (*print_time_fn)();
+extern char *(*print_time_fn)();
 extern struct s_tree tree;
 
 char *get_filter(char **);
@@ -94,8 +102,8 @@ int blank_match_func(char *, int);
 
 int strishex(char *);
 
-void print_time(struct pcap_pkthdr *, char *);
-void print_time_date(struct pcap_pkthdr *, char *);
+char *print_time(struct pcap_pkthdr *);
+char *print_time_date(struct pcap_pkthdr *);
 void print_time_diff(struct pcap_pkthdr *, char *);
 
 void dump_delay(struct pcap_pkthdr *);

@@ -12,6 +12,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/in_systm.h>
+#include <arpa/inet.h>
 #include <net/if.h>
 #include <regex.h>
 #include <fcntl.h>
@@ -84,7 +85,7 @@ int parse_packet(int curpos)
     }
     if (debug & 16)
       fprintf(stderr, 
-	      "parse_packet: curpos=%d op=%d term=%d attrib=%d value=%d\n",
+	      "parse_packet: curpos=%d op=%lu term=%d attrib=%d value=%d\n",
 	      curpos, filters[abc].op, tree.elem[curpos].lside, 
 	      attrib, result);
   }
@@ -142,8 +143,8 @@ inline int watchlist_check(char pkt_type, unsigned char ident,
   lp = (startpos + 1) % WATCHMAX;
   for (; lp != startpos ; lp = (lp + 1) % WATCHMAX)
   {
-    if (watchlist[lp].sport != sport) continue;
-    if (watchlist[lp].saddr != saddr) continue;
+    if (watchlist[lp].sport != (unsigned long)sport) continue;
+    if (watchlist[lp].saddr != (unsigned long)saddr) continue;
     if (watchlist[lp].ident != ident) continue;
 
     if (debug)
@@ -169,7 +170,7 @@ int watchlist_add(unsigned char ident, int saddr, int sport)
   while (startpos != lp) 
   {
     if (watchlist[lp].sport   == 0)       break;
-    if (watchlist[lp].timeout <= timeout) break;
+    if (watchlist[lp].timeout <= (unsigned long)timeout) break;
 
     //printf(" t_watchptr %d lp %d\n", t_watchptr, lp);
     if (debug)
@@ -179,7 +180,7 @@ int watchlist_add(unsigned char ident, int saddr, int sport)
   }
   if (debug)
   {
-    fprintf(stderr, "watchlist_add: storing pos = %d port = %d timeout = %d\n",
+    fprintf(stderr, "watchlist_add: storing pos = %d port = %lu timeout = %lu\n",
 	    lp, watchlist[lp].sport, watchlist[lp].timeout);
   }
   watchlist[lp].ident = ident;
@@ -224,7 +225,7 @@ void match_attr(int attrib, int attr_type, void *data)
 
   for (lp = 0; lp < t_radfilters; lp++)
   {
-    if (filters[lp].vala != attrib) continue;
+    if (filters[lp].vala != (unsigned long)attrib) continue;
     if (debug > 5) printf("match_attr: Matched attrib %ld\n", 
 			  filters[lp].vala);
     if (filters[lp].op == LEX_EXIST) 
@@ -246,12 +247,12 @@ void match_attr(int attrib, int attr_type, void *data)
       value = *((int *)data);
       switch (filters[lp].op)
       {
-      case LEX_EQ:   result = (filters[lp].valb == value); break;
-      case LEX_NEQ:  result = (filters[lp].valb != value); break;
-      case LEX_LT:   result = (filters[lp].valb > value);  break;
-      case LEX_GT:   result = (filters[lp].valb < value);  break;
-      case LEX_LTE:  result = (filters[lp].valb >= value); break;
-      case LEX_GTE:  result = (filters[lp].valb <= value); break;
+      case LEX_EQ:   result = (filters[lp].valb == (unsigned long)value); break;
+      case LEX_NEQ:  result = (filters[lp].valb != (unsigned long)value); break;
+      case LEX_LT:   result = (filters[lp].valb > (unsigned long)value);  break;
+      case LEX_GT:   result = (filters[lp].valb < (unsigned long)value);  break;
+      case LEX_LTE:  result = (filters[lp].valb >= (unsigned long)value); break;
+      case LEX_GTE:  result = (filters[lp].valb <= (unsigned long)value); break;
       }
       filters[lp].value = result;
       break;
@@ -275,7 +276,7 @@ void process(u_char *data1, struct pcap_pkthdr* h, u_char *p) {
   unsigned ip_off = ntohs(ip_packet->ip_off);
   unsigned fragmented = ip_off & (IP_MF | IP_OFFMASK);
   //  unsigned frag_offset = fragmented?(ip_off & IP_OFFMASK) * 8:0;
-  static char tmpbuf[LBUFSIZE], longbuf[LBUFSIZE], hdrbuf[132];
+  static char tmpbuf[LBUFSIZE], longbuf[LBUFSIZE], hdrbuf[HDRBUFSIZE];
   struct attribs *tmpdata, *tmpdatav;
   struct udphdr* udp;
   unsigned udphdr_offset;
@@ -284,7 +285,7 @@ void process(u_char *data1, struct pcap_pkthdr* h, u_char *p) {
   unsigned int lp, len;
   char showpkt, replypkt = 0, reverse = 0;
   char srchost[24], dsthost[24];
-  char *ptr;
+  char *ptr, *timestamp;
   unsigned long vendorid;
   int dataoffset;
   if (ip_packet->ip_p != IPPROTO_UDP) 
@@ -306,44 +307,56 @@ void process(u_char *data1, struct pcap_pkthdr* h, u_char *p) {
   switch (pkttype) {
   case RADPKT_AUTH_REQUEST:
     showpkt = show_auth & show_req;
-    sprintf(tmpbuf, "Request ");
+    snprintf(tmpbuf, sizeof(tmpbuf), "Request ");
     break;
   case RADPKT_AUTH_ACCEPT:
     showpkt = show_auth & show_resp;
     reverse = 1;
-    sprintf(tmpbuf, "Accept  ");
+    snprintf(tmpbuf, sizeof(tmpbuf), "Accept  ");
     break;
   case RADPKT_AUTH_REJECT: 
     showpkt = show_auth & show_resp;
     reverse = 1;
-    sprintf(tmpbuf, "Reject  ");
+    snprintf(tmpbuf, sizeof(tmpbuf), "Reject  ");
     break;
   case RADPKT_ACCT_REQUEST: 
     showpkt = show_acct & show_req;
-    sprintf(tmpbuf, "Acc-Req ");
+    snprintf(tmpbuf, sizeof(tmpbuf), "Acc-Req ");
     break;
   case RADPKT_ACCT_RESPONSE: 
     showpkt = show_acct & show_resp;
     reverse = 1;
-    sprintf(tmpbuf, "Acc-Ack ");
+    snprintf(tmpbuf, sizeof(tmpbuf), "Acc-Ack ");
+    break;
+  case RADPKT_DISC_REQ:
+    showpkt = 1;
+    snprintf(tmpbuf, sizeof(tmpbuf), "Dis-Req ");
+    break;
+  case RADPKT_DISC_ACK:
+    showpkt = 1;
+    snprintf(tmpbuf, sizeof(tmpbuf), "Dis-ACK ");
+    break;
+  case RADPKT_DISC_NAK:
+    showpkt = 1;
+    snprintf(tmpbuf, sizeof(tmpbuf), "Dis-NAK ");
     break;
   case RADPKT_ACCT_CHALLENGE:
     // Not sure how to handle the rest so we'll just set showpkt to 1
     showpkt = 1;
-    sprintf(tmpbuf, "Ac-Chal ");
+    snprintf(tmpbuf, sizeof(tmpbuf), "Ac-Chal ");
     break;
   case RADPKT_STATUS_SERVER:
     showpkt = 1;
-    sprintf(tmpbuf, "Stat-Se ");
+    snprintf(tmpbuf, sizeof(tmpbuf), "Stat-Se ");
     break;
   case RADPKT_STATUS_CLIENT:
     showpkt = 1;
-    sprintf(tmpbuf, "Stat-Cl ");
+    snprintf(tmpbuf, sizeof(tmpbuf), "Stat-Cl ");
     break;
   default:
-    showpkt = 1;
+    showpkt = show_invalid;
     /* Since we have no idea what this packet is,  skip it */
-    sprintf(tmpbuf, "Packet %3d (skip)", *data);
+    snprintf(tmpbuf, sizeof(tmpbuf),"Packet %3d (skip)", pkttype);
     replypkt = 1;
     break;
   }
@@ -353,24 +366,26 @@ void process(u_char *data1, struct pcap_pkthdr* h, u_char *p) {
 	   inet_ntoa(ip_packet->ip_src),
 	   inet_ntoa(ip_packet->ip_dst));
 
-  sprintf(srchost, "%s:%d",
+  snprintf(srchost, sizeof(srchost), "%s:%d",
 	  inet_ntoa(ip_packet->ip_src), ntohs(udp->uh_sport) );
 
-  sprintf(dsthost, "%s:%d",
+  snprintf(dsthost, sizeof(dsthost), "%s:%d",
 	  inet_ntoa(ip_packet->ip_dst), ntohs(udp->uh_dport) );
+
+  if (print_time_fn)
+    timestamp = print_time_fn(h);
+  else 
+    timestamp = "";
 
   if (reverse)
   {
-    sprintf(hdrbuf, "%s(%2x) - %s <- %s (L%d)          \n", 
-	    tmpbuf, ident, dsthost, srchost, len);
+    snprintf(hdrbuf,sizeof(hdrbuf), "%s(%2x) - %s <- %s (L%d) %s\n", 
+	    tmpbuf, ident, dsthost, srchost, len, timestamp);
   }
   else {
-    sprintf(hdrbuf, "%s(%2x) - %s -> %s (L%d)          \n", 
-	    tmpbuf, ident, srchost, dsthost, len);
+    snprintf(hdrbuf,sizeof(hdrbuf), "%s(%2x) - %s -> %s (L%d) %s\n", 
+	    tmpbuf, ident, srchost, dsthost, len, timestamp);
   }
-  if (print_time_fn)
-    print_time_fn(h, hdrbuf);
-
   /* If replypkt is set this early - run away - bad packet */ 
   if (replypkt) goto LABEL;
   replypkt = watchlist_check(*data, ident,
@@ -424,14 +439,14 @@ void process(u_char *data1, struct pcap_pkthdr* h, u_char *p) {
 	  // Ok - now we need to check whether this is an enum type
 	  tmpdatav = find_radvals_by_value(attrib, value);
 	  if (tmpdatav) {
-	    sprintf(tmpbuf, "  %-23s\tLen %2d \t%s\n", 
+	    snprintf(tmpbuf, sizeof(tmpbuf), "  %-23s\tLen %2d \t%s\n", 
 		    tmpdata->name, length, tmpdatav->name);
-	    strcat(longbuf, tmpbuf);
+	    strlcat(longbuf, tmpbuf,sizeof(longbuf));
 	  }
 	  else {
-	    sprintf(tmpbuf, "  %-23s\tLen %2d \t%u\n", 
+	    snprintf(tmpbuf, sizeof(tmpbuf), "  %-23s\tLen %2d \t%u\n", 
 		    tmpdata->name, length, value);
-	    strcat(longbuf, tmpbuf);
+	    strlcat(longbuf, tmpbuf, sizeof(longbuf));
 	  }
 	}
 	break;
@@ -441,18 +456,18 @@ void process(u_char *data1, struct pcap_pkthdr* h, u_char *p) {
 	if (!replypkt) 
 	  match_attr(attrib, tmpdata->valb, (void *) inet_ntoa(a));
 
-	sprintf(tmpbuf, "  %-23s\tLen %2d \t%s\n", 
+	snprintf(tmpbuf, sizeof(tmpbuf), "  %-23s\tLen %2d \t%s\n", 
 		tmpdata->name, length, inet_ntoa(a));
-	strcat(longbuf, tmpbuf);
+	strlcat(longbuf, tmpbuf, sizeof(longbuf));
 	break;
       case RADAT_STR:
 	{
 	  if (attrib != 26)
-	    sprintf(tmpbuf, "  %-23s\tLen %2d \t\"", tmpdata->name, length);
+	    snprintf(tmpbuf, sizeof(tmpbuf), "  %-23s\tLen %2d \t\"", tmpdata->name, length);
 	  else 
-	    sprintf(tmpbuf, "  %s(%3d,%3d)\tLen %2d \t\"",tmpdata->name,vendorid,vendorattr, length-dataoffset);
+	    snprintf(tmpbuf, sizeof(tmpbuf), "  %s(%3lu,%3d)\tLen %2d \t\"",tmpdata->name,vendorid,vendorattr, length-dataoffset);
 
-	  strcat(longbuf, tmpbuf);
+	  strlcat(longbuf, tmpbuf, sizeof(longbuf));
 
 	  for (ptr=tmpbuf,lp = 2; lp < length-dataoffset; lp++)
 	  {
@@ -470,15 +485,15 @@ void process(u_char *data1, struct pcap_pkthdr* h, u_char *p) {
 	    match_attr(attrib, tmpdata->valb, (void *) tmpbuf);
 
 	  /* Need to add this onto the end to make it useable */
-	  strcat(tmpbuf,"\"\n");
-	  strcat(longbuf, tmpbuf);
+          strlcat(tmpbuf,"\"\n", sizeof(tmpbuf));
+	  strlcat(longbuf, tmpbuf, sizeof(longbuf));
 	}
       }
     }
     else {
-      sprintf(tmpbuf, "  Attrib-%3u\t\t\tLen %2d\t\"", 
+      snprintf(tmpbuf, sizeof(tmpbuf), "  Attrib-%3u\t\t\tLen %2d\t\"", 
 	      (char) attrib & 0xff, (char)length & 0xff);
-      strcat(longbuf, tmpbuf);
+      strlcat(longbuf, tmpbuf, sizeof(longbuf));
       for (ptr=tmpbuf,lp = 2; lp < length; lp++)
       {
 	      if ((*(atdata+lp) > 31) && (*(atdata+lp) < 128))
@@ -489,8 +504,8 @@ void process(u_char *data1, struct pcap_pkthdr* h, u_char *p) {
 	      } 
       } 
       *ptr = '\0';
-      strcat(tmpbuf,"\"\n");
-      strcat(longbuf, tmpbuf);
+      strlcat(tmpbuf,"\"\n", sizeof(tmpbuf));
+      strlcat(longbuf, tmpbuf, sizeof(longbuf));
     }
     atdata += length;
   }

@@ -1,12 +1,12 @@
 
 
 %{
-#define YYSTYPE int
+//#define YYDEBUG 1
 #include "y.tab.h"
 extern char yacc_input_buff[1000];
 extern char *yacc_input_pos;
 extern int debug;
-extern int yylval;
+//extern YYSTYPE yylval;
 
 #ifndef lint
 static const char rcsid[] =
@@ -56,8 +56,8 @@ not|"!"		{ if (debug) fprintf(stderr, "\nlex: NOT\n");
 
 
 "\0"            { return LEX_NULL; }
-"("             { printf("\nlex: LPAR\n"); return LEX_LPAR; }
-")"             { printf("\nlex: RPAR\n"); return LEX_RPAR; }
+"("             { if (debug) fprintf(stderr,"\nlex: LPAR\n"); return LEX_LPAR; }
+")"             { if (debug) fprintf(stderr,"\nlex: RPAR\n"); return LEX_RPAR; }
 
 "="             {    return LEX_EQ;   }
 ">="            {    return LEX_GTE;  }
@@ -66,10 +66,10 @@ not|"!"		{ if (debug) fprintf(stderr, "\nlex: NOT\n");
 "<"             {    return LEX_LT;   }
 "!="            {    return LEX_NEQ;  }
 
-#{N}             { printf("\nlex: NUM %s\n", yytext);  return LEX_NUM;  }
-{N}             {  yylval = yytext;  return LEX_NUM;  }
-#{S}             { printf("\nlex: STR %s\n", yytext);  yylval = yytext; return LEX_STR;  }
-{S}             { yylval = yytext; return LEX_STR;  }
+#{N}             { printf("\nlex: NUM %s\n", yytext); yylval.string= yytext;  return LEX_NUM;  }
+{N}             {  yylval.string = yytext;  return LEX_NUM;  }
+#{S}             { printf("\nlex: STR %s\n", yytext);  yylval.string= yytext; return LEX_STR;  }
+{S}             { yylval.string = yytext; return LEX_STR;  }
 
 %%
 

@@ -12,6 +12,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/in_systm.h>
+#include <arpa/inet.h>
 #include <net/if.h>
 #include <regex.h>
 #include <fcntl.h>
@@ -83,12 +84,13 @@ int show_auth = 1;
 int show_acct = 1;
 int show_req  = 1;
 int show_resp = 1;
+int show_invalid = 0;
 
 char *read_file = NULL, *dump_file = NULL, *dict_file = NULL;
 pcap_dumper_t *pd_dump = NULL;
 
 struct timeval prev_ts = {0, 0}, prev_delay_ts = {0,0};
-void (*print_time_fn)() = NULL;
+char *(*print_time_fn)() = NULL;
 
 
 
@@ -110,7 +112,7 @@ int main(int argc, char **argv) {
    * STDIN, file, or optarg, and treat it exactly the same 
    */
   if (debug) printf("Parsing switches\n");
-  while ((c = getopt(argc, argv, "KLMNpd:hXVi:c:wqe:vxlDtTn:i:A:I:O:f:")) != EOF) {
+  while ((c = getopt(argc, argv, "KLMNpd:hXVi:c:wqe:vxlDtSTn:i:A:I:O:f:")) != EOF) {
     switch (c) {
     case 'K':
       if (show_auth == 1) show_acct = 0;
@@ -179,6 +181,9 @@ int main(int argc, char **argv) {
       break;
     case 'q':
       quiet++;
+      break;
+    case 'S':
+      show_invalid = 1;
       break;
     case 'w':
       re_match_word++;
@@ -445,22 +450,26 @@ int strishex(char *str) {
 
 
 
-void print_time(struct pcap_pkthdr *h, char *buf) 
+char *print_time(struct pcap_pkthdr *h) 
 {
+  static char timebuf[18];
   struct tm *t = localtime((time_t *) &h->ts.tv_sec);
 
-  sprintf(buf+79-10, "[%02d:%02d:%02d]\n",
-	  t->tm_hour, t->tm_min, t->tm_sec);
+  snprintf(timebuf,sizeof(timebuf), "[%02d:%02d:%02d.%06d]",
+	  t->tm_hour, t->tm_min, t->tm_sec, h->ts.tv_usec);
+  return timebuf;
 }
 
 
-void print_time_date(struct pcap_pkthdr *h, char *buf) 
+char *print_time_date(struct pcap_pkthdr *h) 
 {
+  static char timebuf[29];
   struct tm *t = localtime((time_t *) &h->ts.tv_sec);
 
-  sprintf(buf+79-19, "[%02d/%02d/%02d %02d:%02d:%02d]\n",
-         t->tm_mday, t->tm_mon, t->tm_year % 100, t->tm_hour,
-         t->tm_min, t->tm_sec);
+  snprintf(timebuf,sizeof(timebuf), "[%04d-%02d-%02d %02d:%02d:%02d.%06d]\n",
+         t->tm_year+1900, t->tm_mon+1, t->tm_mday, t->tm_hour,
+         t->tm_min, t->tm_sec, h->ts.tv_usec);
+  return timebuf;
 }
 
 
