@@ -87,18 +87,237 @@ ATTRIBUTE       Acct-Output-Packets	48	integer
 ATTRIBUTE	Acct-Terminate-Cause	49	integer
 ATTRIBUTE	Acct-Multi-Session-Id	50	string
 ATTRIBUTE	Acct-Link-Count		51	integer
+ATTRIBUTE	Acct-Input-Gigawords	52	integer
+ATTRIBUTE	Acct-Output-Gigawords	53	integer
+# (RFC 2869)
+ATTRIBUTE       Event-Timestamp         	55      integer
+# (RFC  4675)
+ATTRIBUTE	Egress-VLANID			56	integer
+ATTRIBUTE	Ingress-Filters			57	integer
+ATTRIBUTE	Egress-VLAN-Name		58	string
+ATTRIBUTE	User-Priority-Table		59	string
 
 ATTRIBUTE	CHAP-Challenge		60	string
 ATTRIBUTE	NAS-Port-Type		61	integer
 ATTRIBUTE	Port-Limit		62	integer
 ATTRIBUTE	Login-LAT-Port		63	integer
 
-ATTRIBUTE	Connect-Info		77	string
+ATTRIBUTE       Tunnel-Type                     64      integer
+ATTRIBUTE       Tunnel-Medium-Type              65      integer
+ATTRIBUTE       Tunnel-Client-Endpoint     	66      string
+ATTRIBUTE       Tunnel-Server-Endpoint          67      string
+ATTRIBUTE       Acct-Tunnel-Connection 		68      string
+ATTRIBUTE       Tunnel-ID       		68      string
+
+ATTRIBUTE       Tunnel-Password                 69      string has_tag,encrypt=2
+ATTRIBUTE	ARAP-Password			70	string
+ATTRIBUTE	ARAP-Features			71	string
+ATTRIBUTE	ARAP-Zone-Access		72	integer    
+ATTRIBUTE	ARAP-Security			73	integer    
+ATTRIBUTE	ARAP-Security-Data		74	string    
+ATTRIBUTE	Password-Retry			75	integer   
+ATTRIBUTE       Prompt            		76      integer
+ATTRIBUTE	Connect-Info		        77	string
+ATTRIBUTE       Configuration-Token     	78      binary
+ATTRIBUTE       EAP-Message             	79      binary
+ATTRIBUTE    	Signature               	80      binary
+ATTRIBUTE    	Message-Authenticator   	80      binary
+ATTRIBUTE    	Tunnel-Private-Group-ID		81	string
+ATTRIBUTE    	Tunnel-Assignment-ID		82	string
+ATTRIBUTE    	Tunnel-Preference		83	integer
+ATTRIBUTE	ARAP-Challenge-Response		84	binary
+ATTRIBUTE    	Acct-Interim-Interval		85	integer
+ATTRIBUTE   	Ascend-Owner-IP-Addr    	86      ipaddr
+ATTRIBUTE       NAS-Port-Id			87      string
+ATTRIBUTE       Framed-Pool			88      string
+
+# (RFC 4372)
+
+ATTRIBUTE	Chargeable-User-Identity	89	string
+
+ATTRIBUTE       Tunnel-Client-Auth-ID           90      string
+ATTRIBUTE       Tunnel-Server-Auth-ID           91      string
+
+# (RFC 4849)
+ATTRIBUTE       NAS-Filter-Rule                 92      string
+
+# (RFC 4005)
+ATTRIBUTE	Originating-Line-Info		94	string
+
+# From RFC 3162, RADIUS and IPv6: some should be IPV6 addresses
+
+#ATTRIBUTE	NAS-IPv6-Address		95	ipaddrv6
+ATTRIBUTE	Framed-Interface-Id		96	string
+#ATTRIBUTE	Framed-IPv6-Prefix		97	ipv6prefix
+ATTRIBUTE	Login-IPv6-Host			98	binary
+ATTRIBUTE	Framed-IPv6-Route		99	string
+ATTRIBUTE	Framed-IPv6-Pool		100	string
 
 #
-#	Experimental Non Protocol Attributes used by Cistron-Radiusd
+# This next group defines the Ascend attributes that were used
+# prior to Ascend adopting their own vendor specifics.
+# See VENDORATTR 529 below for the vendor specifics.
 #
-ATTRIBUTE	Old-Huntgroup-Name	221	string
+
+ATTRIBUTE	Ascend-FR-Link-Status-Dlci	106	integer
+ATTRIBUTE       Ascend-Calling-Subadddress      107     string
+ATTRIBUTE	Ascend-Callback-Delay		108	integer
+ATTRIBUTE	Ascend-Endpoint-Disc		109	string
+ATTRIBUTE	Ascend-Remote-FW		110	string
+ATTRIBUTE	Ascend-Multicast-GLeave-Delay	111	integer
+ATTRIBUTE	Ascend-CBCP-Enable		112	integer
+ATTRIBUTE	Ascend-CBCP-Mode		113	integer
+ATTRIBUTE	Ascend-CBCP-Delay		114	integer
+ATTRIBUTE	Ascend-CBCP-Trunk-Group		115	integer
+ATTRIBUTE	Ascend-Appletalk-Route		116	string
+ATTRIBUTE	Ascend-Appletalk-Peer-Mode	117	integer
+ATTRIBUTE	Ascend-Route-Appletalk		118	integer
+ATTRIBUTE	Ascend-FCP-Parameter		119	string
+ATTRIBUTE	Ascend-Modem-PortNo		120	integer
+ATTRIBUTE	Ascend-Modem-SlotNo		121	integer
+ATTRIBUTE	Ascend-Modem-ShelfNo		122	integer
+ATTRIBUTE	Ascend-Call-Attempt-Limit	123	integer
+ATTRIBUTE	Ascend-Call-Block-Duration	124	integer
+ATTRIBUTE	Ascend-Maximum-Call-Duration	125	integer
+ATTRIBUTE	Ascend-Route-Preference		126	integer
+ATTRIBUTE       Tunneling-Protocol              127     integer
+ATTRIBUTE       Ascend-Shared-Profile-Enable    128     integer
+ATTRIBUTE	Ascend-Primary-Home-Agent	129	string
+ATTRIBUTE	Ascend-Secondary-Home-Agent	130	string
+ATTRIBUTE	Ascend-Dialout-Allowed		131	integer
+ATTRIBUTE       Ascend-Client-Gateway           132     ipaddr
+ATTRIBUTE	Ascend-BACP-Enable		133	integer
+ATTRIBUTE	Ascend-DHCP-Maximum-Leases	134	integer
+ATTRIBUTE	Ascend-Client-Primary-DNS	135	ipaddr
+ATTRIBUTE	Ascend-Client-Secondary-DNS	136	ipaddr
+ATTRIBUTE	Ascend-Client-Assign-DNS	137	integer
+ATTRIBUTE	Ascend-User-Acct-Type		138	integer
+ATTRIBUTE	Ascend-User-Acct-Host		139	ipaddr
+ATTRIBUTE	Ascend-User-Acct-Port		140	integer
+ATTRIBUTE	Ascend-User-Acct-Key		141	string
+ATTRIBUTE	Ascend-User-Acct-Base		142	integer
+ATTRIBUTE	Ascend-User-Acct-Time		143	integer
+ATTRIBUTE	Ascend-Assign-IP-Client		144	ipaddr
+ATTRIBUTE	Ascend-Session-Svr-Key		151	string
+ATTRIBUTE	Ascend-FR-Circuit-Name		156	string
+ATTRIBUTE	Ascend-FR-LinkUp		157	integer
+ATTRIBUTE	Ascend-FR-Nailed-Grp		158	integer
+ATTRIBUTE	Ascend-FR-Type			159	integer
+ATTRIBUTE	Ascend-FR-Link-Mgt		160	integer
+ATTRIBUTE	Ascend-FR-N391			161	integer
+ATTRIBUTE	Ascend-FR-DCE-N392		162	integer
+ATTRIBUTE	Ascend-FR-DTE-N392		163	integer
+ATTRIBUTE	Ascend-FR-DCE-N393		164	integer
+ATTRIBUTE	Ascend-FR-DTE-N393		165	integer
+ATTRIBUTE	Ascend-FR-T391			166	integer
+ATTRIBUTE	Ascend-FR-T392			167	integer
+ATTRIBUTE	Ascend-Bridge-Address  	 	168	string
+ATTRIBUTE       Ascend-TS-Idle-Limit            169     integer
+ATTRIBUTE       Ascend-TS-Idle-Mode             170     integer
+ATTRIBUTE	Ascend-DBA-Monitor	 	171	integer
+ATTRIBUTE	Ascend-Base-Channel-Count 	172	integer
+ATTRIBUTE	Ascend-Minimum-Channels		173	integer
+ATTRIBUTE	Ascend-IPX-Route		174	string
+ATTRIBUTE	Ascend-FT1-Caller		175	integer
+ATTRIBUTE	Ascend-Backup			176	string
+ATTRIBUTE	Ascend-Call-Type		177	integer
+ATTRIBUTE	Ascend-Group			178	string
+ATTRIBUTE	Ascend-FR-DLCI			179	integer
+ATTRIBUTE	Ascend-FR-Profile-Name		180	string
+ATTRIBUTE	Ascend-Ara-PW			181	string
+ATTRIBUTE	Ascend-IPX-Node-Addr		182	string
+ATTRIBUTE	Ascend-Home-Agent-IP-Addr	183	ipaddr
+ATTRIBUTE	Ascend-Home-Agent-Password	184	string
+ATTRIBUTE	Ascend-Home-Network-Name	185	string
+ATTRIBUTE	Ascend-Home-Agent-UDP-Port	186	integer
+ATTRIBUTE	Ascend-Multilink-ID		187	integer
+ATTRIBUTE	Ascend-Num-In-Multilink		188	integer
+ATTRIBUTE	Ascend-First-Dest		189	ipaddr
+ATTRIBUTE	Ascend-Pre-Input-Octets		190	integer
+ATTRIBUTE	Ascend-Pre-Output-Octets	191	integer
+ATTRIBUTE	Ascend-Pre-Input-Packets	192	integer
+ATTRIBUTE	Ascend-Pre-Output-Packets	193	integer
+ATTRIBUTE	Ascend-Maximum-Time		194	integer
+ATTRIBUTE	Ascend-Disconnect-Cause		195	integer
+ATTRIBUTE	Ascend-Connect-Progress		196	integer
+ATTRIBUTE	Ascend-Data-Rate		197	integer
+ATTRIBUTE	Ascend-PreSession-Time		198	integer
+ATTRIBUTE	Ascend-Token-Idle		199	integer
+ATTRIBUTE       IETF-Token-Immediate            200     integer
+ATTRIBUTE	Ascend-Token-Immediate		200	integer
+ATTRIBUTE	Ascend-Require-Auth		201	integer
+ATTRIBUTE	Ascend-Number-Sessions		202	string
+ATTRIBUTE	Ascend-Authen-Alias		203	string
+ATTRIBUTE	Ascend-Token-Expiry		204	integer
+ATTRIBUTE	Ascend-Menu-Selector		205	string
+ATTRIBUTE	Ascend-Menu-Item		206	string
+ATTRIBUTE	Ascend-PW-Warntime		207	integer
+ATTRIBUTE	Ascend-PW-Lifetime		208	integer
+ATTRIBUTE	Ascend-PPP-VJ-Slot-Comp		210	integer
+ATTRIBUTE	Ascend-PPP-VJ-1172		211	integer
+ATTRIBUTE	Ascend-PPP-Async-Map		212	integer
+ATTRIBUTE	Ascend-Third-Prompt		213	string
+ATTRIBUTE	Ascend-Send-Secret		214	string encrypt=3
+ATTRIBUTE	Ascend-Receive-Secret		215	string encrypt=3
+ATTRIBUTE	Ascend-IPX-Peer-Mode		216	integer
+ATTRIBUTE	Ascend-IP-Pool-Definition	217	string
+ATTRIBUTE	Ascend-Assign-IP-Pool		218	integer
+ATTRIBUTE	Ascend-FR-Direct		219	integer
+ATTRIBUTE	Ascend-FR-Direct-Profile	220	string
+ATTRIBUTE	Ascend-FR-Direct-DLCI		221	integer
+ATTRIBUTE	Ascend-Handle-IPX		222	integer
+ATTRIBUTE	Ascend-Netware-timeout		223	integer
+# The next four are replace by Huawei attributes below
+#ATTRIBUTE	Ascend-IPX-Alias		224	integer
+#ATTRIBUTE	Ascend-Metric			225	integer
+#ATTRIBUTE	Ascend-PRI-Number-Type		226	integer
+#ATTRIBUTE	Ascend-Dial-Number		227	string
+#ATTRIBUTE	Ascend-Route-IP			228	integer
+#
+# Huawei appears to use these VPA's.  CellC says its default and can't bechanged.  I don't believe them.  
+# They correspond to Nokia VSA's
+# Putting them at the end of the file does not override the Ascend VPA stuff further up, contrary to 
+# what the source code suggests
+#
+ATTRIBUTE       Huawei-VPA-IMSI                 224     binary
+ATTRIBUTE       Huawei-VPA-Charging-Id          225     integer 
+ATTRIBUTE       Huawei-VPA-Prepaid-Id           226     integer 
+ATTRIBUTE       Huawei-VPA-GGSN-IP-Address      227     ipaddr  
+ATTRIBUTE       Huawei-VPA-SGSN-IP-Address      228     ipaddr  
+
+ATTRIBUTE	Ascend-Route-IPX		229	integer
+ATTRIBUTE	Ascend-Bridge			230	integer
+ATTRIBUTE	Ascend-Send-Auth		231	integer
+ATTRIBUTE	Ascend-Send-Passwd		232	string
+#ATTRIBUTE	Ascend-MRU			see	Framed-MTU
+ATTRIBUTE	Ascend-Link-Compression		233	integer
+#ATTRIBUTE	Ascend-VJ-Compression		see	Framed-Compression
+ATTRIBUTE	Ascend-Target-Util		234	integer
+ATTRIBUTE	Ascend-Maximum-Channels		235	integer
+ATTRIBUTE	Ascend-Inc-Channel-Count	236	integer
+ATTRIBUTE	Ascend-Dec-Channel-Count	237	integer
+ATTRIBUTE	Ascend-Seconds-Of-History	238	integer
+ATTRIBUTE	Ascend-History-Weigh-Type	239	integer
+ATTRIBUTE	Ascend-Add-Seconds		240	integer
+ATTRIBUTE	Ascend-Remove-Seconds		241	integer
+#ATTRIBUTE	Ascend-RIP			see Framed-Routing
+ATTRIBUTE	Ascend-Data-Filter		242	abinary
+ATTRIBUTE	Ascend-Call-Filter		243	abinary
+#ATTRIBUTE	Ascend-Data-Filter		242	string
+#ATTRIBUTE	Ascend-Call-Filter		243	string
+ATTRIBUTE	Ascend-Idle-Limit		244	integer
+ATTRIBUTE	Ascend-Preempt-Limit		245	integer
+ATTRIBUTE	Ascend-Callback			246	integer
+ATTRIBUTE	Ascend-Data-Svc			247	integer
+ATTRIBUTE	Ascend-Force-56			248	integer
+ATTRIBUTE	Ascend-Billing-Number		249	string
+ATTRIBUTE	Ascend-Call-By-Call		250	integer
+ATTRIBUTE	Ascend-Transit-Number		251	string
+#ATTRIBUTE	Ascend-Terminal-Banner		see	Reply-Message
+ATTRIBUTE	Ascend-Host-Info		252	string
+ATTRIBUTE	Ascend-PPP-Address		253	ipaddr
+ATTRIBUTE	Ascend-MPP-Idle-Percent		254	integer
+ATTRIBUTE	Ascend-Xmit-Rate		255	integer
 
 # 	These attributes CAN go in the reply item list.
 ATTRIBUTE	Fall-Through		500	integer
@@ -198,6 +417,36 @@ VALUE		NAS-Port-Type		Sync			1
 VALUE		NAS-Port-Type		ISDN			2
 VALUE		NAS-Port-Type		ISDN-V120		3
 VALUE		NAS-Port-Type		ISDN-V110		4
+VALUE		NAS-Port-Type		Virtual			5
+VALUE		NAS-Port-Type		PIAFS			6
+VALUE		NAS-Port-Type		HDLC-Clear-Channel	7
+VALUE		NAS-Port-Type		X.25			8
+VALUE		NAS-Port-Type		X.75			9
+VALUE		NAS-Port-Type		G.3-Fax			10
+VALUE		NAS-Port-Type		SDSL			11
+VALUE		NAS-Port-Type		ADSL-CAP		12
+VALUE		NAS-Port-Type		ADSL-DMT		13
+VALUE		NAS-Port-Type		IDSL			14
+VALUE		NAS-Port-Type		Ethernet		15
+VALUE           NAS-Port-Type           xDSL                    16
+VALUE           NAS-Port-Type           Cable			17
+VALUE           NAS-Port-Type           Wireless-Other		18
+VALUE           NAS-Port-Type           Wireless-IEEE-802-11	19
+VALUE           NAS-Port-Type           Token-Ring		20
+VALUE           NAS-Port-Type           FDDI			21
+VALUE           NAS-Port-Type           Wireless-CDMA2000	22
+VALUE           NAS-Port-Type           Wireless-UMTS		23
+VALUE           NAS-Port-Type           Wireless-1X-EV		24
+VALUE           NAS-Port-Type           IAPP			25
+VALUE           NAS-Port-Type           FTTP			26
+VALUE           NAS-Port-Type           Wireless-IEEE-802.16	27
+VALUE           NAS-Port-Type           Wireless-IEEE-802.20	28
+VALUE           NAS-Port-Type           Wireless-IEEE-802.22	29
+VALUE           NAS-Port-Type           PPPoA			30
+VALUE           NAS-Port-Type           PPPoEoA			31
+VALUE           NAS-Port-Type           PPPoEoE			32
+VALUE           NAS-Port-Type           PPPoEoVLAN		33
+VALUE           NAS-Port-Type           PPPoEoQinQ		34
 
 #	Acct Terminate Causes, available in 3.3.2 and later
 
@@ -219,6 +468,12 @@ VALUE           Acct-Terminate-Cause    Service-Unavailable     15
 VALUE           Acct-Terminate-Cause    Callback                16
 VALUE           Acct-Terminate-Cause    User-Error              17
 VALUE           Acct-Terminate-Cause    Host-Request            18
+VALUE		Acct-Terminate-Cause	Supplicant-Restart	19
+VALUE		Acct-Terminate-Cause	Reauthentication-Failure	20
+VALUE		Acct-Terminate-Cause	Port-Reinit		21
+VALUE		Acct-Terminate-Cause	Port-Disabled		22
+VALUE		Acct-Terminate-Cause	Colubris-Quota-Exceeded		34628
+
 
 #VALUE		Tunnel-Type		L2TP			3
 #VALUE		Tunnel-Medium-Type	IP			1
