@@ -41,7 +41,7 @@
 #include <netinet/ip_icmp.h>
 
 #include <pcap.h>
-#include <net/bpf.h>
+#include <pcap/bpf.h>
 
 #include <stdlib.h>
 #include <string.h>

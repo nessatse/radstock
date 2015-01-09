@@ -34,6 +34,7 @@
 #include <arpa/inet.h>
 #include <ctype.h>
 #include <regex.h>
+#include <time.h>
 #endif
 
 
@@ -43,7 +44,7 @@
 #include <netinet/ip_icmp.h>
 
 #include <pcap.h>
-#include <net/bpf.h>
+#include <pcap/bpf.h>
 
 #include <stdlib.h>
 #include <string.h>

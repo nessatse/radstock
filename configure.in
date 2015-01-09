@@ -25,7 +25,7 @@ pcap_dir=""
 
 for dir in $possible_dirs ; do 
     if test -d $dir -a -r "$dir/pcap.h" -a \
-                       -r "$dir/net/bpf.h" ; then 
+                       -r "$dir/pcap/bpf.h" ; then 
        if test -n "$pcap_dir" ; then
           echo 
           echo; echo more than one set found in:
@@ -48,7 +48,7 @@ else
    echo found $pcap_dir
    
    AC_MSG_CHECKING(for usable bpf.h)
-   if test -n "`grep DLT_RAW $pcap_dir/net/bpf.h`" ; then
+   if test -n "`grep DLT_RAW $pcap_dir/pcap/bpf.h`" ; then
       echo yep
    else 
 

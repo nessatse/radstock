@@ -1,7 +1,7 @@
 /* Reverse polish notation calculator. */
      
 %{
-//#define YYDEBUG 1
+#define YYDEBUG 1
 #include <math.h>
 #include <ctype.h>
 #include <stdio.h>
