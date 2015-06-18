@@ -308,6 +308,10 @@ int main(int argc, char **argv) {
       }
       pcap_freealldevs(alldevs);
     }
+    if (!dev) {
+      perror("No suitable interface found");
+      clean_exit(-1);
+    }
     if ((pd = pcap_open_live(dev, snaplen, promisc, to, pc_err)) == NULL) {
       perror(pc_err);
       clean_exit(-1);
