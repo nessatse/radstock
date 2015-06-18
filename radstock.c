@@ -99,6 +99,9 @@ int main(int argc, char **argv) {
   int c;
   char *radfilterfile = NULL;
   char radfilterbuf[1000] = "\0";
+  pcap_if_t *alldevs;
+  pcap_if_t *d;
+  bpf_u_int32 netp,maskp;
 
   signal(SIGINT,  clean_exit);
   signal(SIGQUIT, clean_exit);
@@ -287,12 +290,24 @@ int main(int argc, char **argv) {
     printf("input: %s\n", read_file);
 
   } else {
-    if (!dev)
-      if (!(dev = pcap_lookupdev(pc_err))) {
-	perror(pc_err);
-	clean_exit(-1);
+    if (!dev) {
+      if (pcap_findalldevs(&alldevs,pc_err) == -1 ) { 
+        perror(pc_err);
+        clean_exit(-1);
       }
-    
+      // Traverse list of devices and use first one with a valid IP
+      for ( d = alldevs; d; d = d->next ) {
+        if ( pcap_lookupnet(d->name,&netp,&maskp,pc_err) == 0 ) {
+          netp = ntohl(netp);
+          if ( netp != 0x00000000 && netp != 0x7f000000 ) {
+            // Use it
+            dev = strdup(d->name);
+            break;
+          }
+        }
+      }
+      pcap_freealldevs(alldevs);
+    }
     if ((pd = pcap_open_live(dev, snaplen, promisc, to, pc_err)) == NULL) {
       perror(pc_err);
       clean_exit(-1);
