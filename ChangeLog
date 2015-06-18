@@ -1,3 +1,8 @@
+2015-06-18  Eddie Stassen <estassen@gmail.com>
+
+	* Instead of just picking a first available interface as default, rather look for
+	one with a vailid looking IP.  Only been tested on Centos 7
+
 2013-11-18  Eddie Stassen <estassen@gmail.com>
 
 	* Added support for Dis-Req, Dis-ACK and Dis-NAK packet types
