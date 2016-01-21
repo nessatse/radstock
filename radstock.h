@@ -41,6 +41,9 @@
 #define RADPKT_DISC_REQ       40
 #define RADPKT_DISC_ACK       41
 #define RADPKT_DISC_NAK       42
+#define RADPKT_COA_REQ        43
+#define RADPKT_COA_ACK        44
+#define RADPKT_COA_NAK        45
 
 struct tree_elem
 {

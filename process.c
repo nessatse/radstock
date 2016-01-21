@@ -366,6 +366,18 @@ void process(u_char *data1, struct pcap_pkthdr* h, u_char *p) {
     showpkt = 1;
     snprintf(tmpbuf, sizeof(tmpbuf), "Dis-NAK ");
     break;
+  case RADPKT_COA_REQ:
+    showpkt = 1;
+    snprintf(tmpbuf, sizeof(tmpbuf), "CoA-Req ");
+    break;
+  case RADPKT_COA_ACK:
+    showpkt = 1;
+    snprintf(tmpbuf, sizeof(tmpbuf), "CoA-ACK ");
+    break;
+  case RADPKT_COA_NAK:
+    showpkt = 1;
+    snprintf(tmpbuf, sizeof(tmpbuf), "CoA-NAK ");
+    break;
   case RADPKT_ACCT_CHALLENGE:
     // Not sure how to handle the rest so we'll just set showpkt to 1
     showpkt = 1;
