@@ -59,9 +59,9 @@ int curnode = 0;
 #define ATTR_MATCH    1
 #define ATTR_NOMATCH  2
 
-#ifdef YYDEBUG
-extern int yydebug;
-#endif
+// #ifdef YYDEBUG
+//extern int yydebug;
+// #endif
 char yacc_input_buff[1000];
 char *yacc_input_pos;
 int yyparse(void);
@@ -245,9 +245,9 @@ void get_radfilter(char *arg)
   yacc_input_pos = yacc_input_buff;
 
   if (debug) printf("get_radfilter: Parsing radius filter\n");
-#ifdef YYDEBUG
-  yydebug = 1;
-#endif
+// #ifdef YYDEBUG
+//  yydebug = YYDEBUG;
+// #endif
   yyparse();
   tree.root = curnode - 1;
   if (debug) printf("get_radfilter: Passed radius filter\n");
