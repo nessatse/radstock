@@ -59,6 +59,8 @@ static char rcsid[] =
 
 //#define DICTFILE "/usr/local/etc/raddb/dictionary"
 
+struct t_watchlist watchlist[WATCHMAX];
+
 char defpcapfilter[] = "udp and port 1645";
 
 int snaplen = 65535, promisc = 1, to = 1000;

@@ -76,10 +76,10 @@ struct t_watchlist
   unsigned long int timeout;
 };
 
-struct t_watchlist watchlist[WATCHMAX];
-struct attribs filters[16];
-struct attribs radattrs[ATTRSIZE];
-struct attribs radvals[ATTRSIZE];
+extern struct t_watchlist watchlist[WATCHMAX];
+extern struct attribs filters[16];
+extern struct attribs radattrs[ATTRSIZE];
+extern struct attribs radvals[ATTRSIZE];
 
 extern int t_radfilters;
 extern struct in_addr net, mask;

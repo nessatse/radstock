@@ -51,6 +51,10 @@
 #include "y.tab.h"
 static char rcsid[] = "$Id: init.c,v 1.1.1.1 2000/10/13 12:23:11 withnail Exp $";
 
+struct attribs filters[16];
+struct attribs radattrs[ATTRSIZE];
+struct attribs radvals[ATTRSIZE];
+
 int t_radvals = 0;
 int t_radattrs = 0;
 int curnode = 0;

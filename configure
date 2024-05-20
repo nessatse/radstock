@@ -671,6 +671,7 @@ infodir
 docdir
 oldincludedir
 includedir
+runstatedir
 localstatedir
 sharedstatedir
 sysconfdir
@@ -743,6 +744,7 @@ datadir='${datarootdir}'
 sysconfdir='${prefix}/etc'
 sharedstatedir='${prefix}/com'
 localstatedir='${prefix}/var'
+runstatedir='${localstatedir}/run'
 includedir='${prefix}/include'
 oldincludedir='/usr/include'
 docdir='${datarootdir}/doc/${PACKAGE}'
@@ -995,6 +997,15 @@ do
   | -silent | --silent | --silen | --sile | --sil)
     silent=yes ;;
 
+  -runstatedir | --runstatedir | --runstatedi | --runstated \
+  | --runstate | --runstat | --runsta | --runst | --runs \
+  | --run | --ru | --r)
+    ac_prev=runstatedir ;;
+  -runstatedir=* | --runstatedir=* | --runstatedi=* | --runstated=* \
+  | --runstate=* | --runstat=* | --runsta=* | --runst=* | --runs=* \
+  | --run=* | --ru=* | --r=*)
+    runstatedir=$ac_optarg ;;
+
   -sbindir | --sbindir | --sbindi | --sbind | --sbin | --sbi | --sb)
     ac_prev=sbindir ;;
   -sbindir=* | --sbindir=* | --sbindi=* | --sbind=* | --sbin=* \
@@ -1132,7 +1143,7 @@ fi
 for ac_var in	exec_prefix prefix bindir sbindir libexecdir datarootdir \
 		datadir sysconfdir sharedstatedir localstatedir includedir \
 		oldincludedir docdir infodir htmldir dvidir pdfdir psdir \
-		libdir localedir mandir
+		libdir localedir mandir runstatedir
 do
   eval ac_val=\$$ac_var
   # Remove trailing slashes.
@@ -1285,6 +1296,7 @@ Fine tuning of the installation directories:
   --sysconfdir=DIR        read-only single-machine data [PREFIX/etc]
   --sharedstatedir=DIR    modifiable architecture-independent data [PREFIX/com]
   --localstatedir=DIR     modifiable single-machine data [PREFIX/var]
+  --runstatedir=DIR       modifiable per-process data [LOCALSTATEDIR/run]
   --libdir=DIR            object code libraries [EPREFIX/lib]
   --includedir=DIR        C header files [PREFIX/include]
   --oldincludedir=DIR     C header files for non-gcc [/usr/include]
@@ -4305,136 +4317,13 @@ else
 fi
 
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for pcap_restart in -lpcap" >&5
-$as_echo_n "checking for pcap_restart in -lpcap... " >&6; }
-if ${ac_cv_lib_pcap_pcap_restart+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lpcap  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char pcap_restart ();
-int
-main ()
-{
-return pcap_restart ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_pcap_pcap_restart=yes
-else
-  ac_cv_lib_pcap_pcap_restart=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_pcap_pcap_restart" >&5
-$as_echo "$ac_cv_lib_pcap_pcap_restart" >&6; }
-if test "x$ac_cv_lib_pcap_pcap_restart" = xyes; then :
-  $as_echo "#define PCAP_RESTART pcap_restart" >>confdefs.h
-
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for pcap_yyrestart in -lpcap" >&5
-$as_echo_n "checking for pcap_yyrestart in -lpcap... " >&6; }
-if ${ac_cv_lib_pcap_pcap_yyrestart+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lpcap  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char pcap_yyrestart ();
-int
-main ()
-{
-return pcap_yyrestart ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_pcap_pcap_yyrestart=yes
-else
-  ac_cv_lib_pcap_pcap_yyrestart=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_pcap_pcap_yyrestart" >&5
-$as_echo "$ac_cv_lib_pcap_pcap_yyrestart" >&6; }
-if test "x$ac_cv_lib_pcap_pcap_yyrestart" = xyes; then :
-  $as_echo "#define PCAP_RESTART pcap_yyrestart" >>confdefs.h
-
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for yyrestart in -lpcap" >&5
-$as_echo_n "checking for yyrestart in -lpcap... " >&6; }
-if ${ac_cv_lib_pcap_yyrestart+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lpcap  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char yyrestart ();
-int
-main ()
-{
-return yyrestart ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_pcap_yyrestart=yes
-else
-  ac_cv_lib_pcap_yyrestart=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_pcap_yyrestart" >&5
-$as_echo "$ac_cv_lib_pcap_yyrestart" >&6; }
-if test "x$ac_cv_lib_pcap_yyrestart" = xyes; then :
-  $as_echo "#define PCAP_RESTART yyrestart" >>confdefs.h
-
-else
-  echo no yacc restart func found
-   echo perhaps libpcap wasn\'t compiled with bison/flex\?
-   exit
-fi
-
-fi
-
-fi
-
-
+#AC_CHECK_LIB(pcap, pcap_restart, AC_DEFINE(PCAP_RESTART,pcap_restart),
+# AC_CHECK_LIB(pcap, pcap_yyrestart, AC_DEFINE(PCAP_RESTART,pcap_yyrestart),
+#  AC_CHECK_LIB(pcap, yyrestart, AC_DEFINE(PCAP_RESTART,yyrestart),
+#   echo no yacc restart func found
+#   echo perhaps libpcap wasn\'t compiled with bison/flex\?
+#   exit)))
+#
 
 ac_config_files="$ac_config_files Makefile"
 

@@ -148,13 +148,13 @@ esac
 
 AC_CHECK_LIB(pcap, pcap_open_live,,echo need pcap lib; exit)
 
-AC_CHECK_LIB(pcap, pcap_restart, AC_DEFINE(PCAP_RESTART,pcap_restart),
- AC_CHECK_LIB(pcap, pcap_yyrestart, AC_DEFINE(PCAP_RESTART,pcap_yyrestart),
-  AC_CHECK_LIB(pcap, yyrestart, AC_DEFINE(PCAP_RESTART,yyrestart),
-   echo no yacc restart func found
-   echo perhaps libpcap wasn\'t compiled with bison/flex\?
-   exit)))
-
+#AC_CHECK_LIB(pcap, pcap_restart, AC_DEFINE(PCAP_RESTART,pcap_restart),
+# AC_CHECK_LIB(pcap, pcap_yyrestart, AC_DEFINE(PCAP_RESTART,pcap_yyrestart),
+#  AC_CHECK_LIB(pcap, yyrestart, AC_DEFINE(PCAP_RESTART,yyrestart),
+#   echo no yacc restart func found
+#   echo perhaps libpcap wasn\'t compiled with bison/flex\?
+#   exit)))
+#
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
